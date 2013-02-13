@@ -1,0 +1,6 @@
+slot-machine-android/bin/
+slot-machine-android/gen/
+slot-machine-android/target/
+slot-machine-android/.settings/org.maven.ide.eclipse.prefs
+slot-machine-android/src/main/resources/settings.local.properties
+slot-machine-android/src/main/resources/git.properties
