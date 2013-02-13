@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="160010000"
+	android:versionName="1.0.0" package="com.jdroid.slotmachine.lite">
+
+	<uses-feature android:name="com.google.android.tv" android:required="false" />
+	<uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+	<uses-feature android:name="android.hardware.location.gps" android:required="false" />
+	<uses-feature android:name="android.hardware.telephony" android:required="false" />
+
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+	<uses-sdk android:minSdkVersion="8" android:targetSdkVersion="16" />
+
+	<application android:debuggable="true" android:hardwareAccelerated="true" android:icon="@drawable/ic_launcher"
+		android:label="@string/appName" android:logo="@drawable/ic_launcher" android:name="com.slotmachine.android.AndroidApplication"
+		android:theme="@style/defaultTheme">
+
+		<activity android:name="com.slotmachine.android.ui.HomeActivity">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+
+		<activity android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+			android:name="com.google.ads.AdActivity" />
+		<activity android:excludeFromRecents="true" android:name="com.androidcommons.exception.ExceptionReportActivity"
+			android:theme="@android:style/Theme.NoDisplay" />
+
+		<service android:name="com.androidcommons.exception.ExceptionReportService" android:exported="false" />
+
+		<!-- Handles notification from Google Play on install -->
+		<receiver android:name="com.google.analytics.tracking.android.AnalyticsReceiver" android:exported="true">
+			<intent-filter>
+				<action android:name="com.android.vending.INSTALL_REFERRER" />
+			</intent-filter>
+		</receiver>
+
+	</application>
+
+</manifest>

@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.slotmachine</groupId>
+	<artifactId>slot-machine-android</artifactId>
+	<version>1.0.0</version>
+	<packaging>apk</packaging>
+	<name>Slot Machine</name>
+	<inceptionYear>2013</inceptionYear>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<android.sdk.platform>16</android.sdk.platform>
+		<app.alias>androiddebugkey</app.alias>
+		<jdroid.version>1.1.0-SNAPSHOT</jdroid.version>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>maven</id>
+			<name>Maven Repository</name>
+			<url>http://repo1.maven.org/maven2/</url>
+		</repository>
+		<repository>
+			<id>dropbox-maven-repository</id>
+			<name>Dropbox Maven Repository</name>
+			<url>http://dl.dropbox.com/u/8520947/maven-repository/</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>android</groupId>
+			<artifactId>android</artifactId>
+			<version>4.1_r3</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- jdroid Android -->
+		<dependency>
+			<groupId>com.jdroid</groupId>
+			<artifactId>jdroid-android</artifactId>
+			<version>${jdroid.version}</version>
+			<type>apklib</type>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<finalName>${project.artifactId}-v${project.version}-${environment.name}-${apk.suffix}</finalName>
+		<plugins>
+
+			<!-- Compiler Plugin -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+
+			<!-- Eclipse Plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.8</version>
+				<configuration>
+					<ajdtVersion>none</ajdtVersion>
+					<additionalBuildcommands>
+						<buildcommand>com.android.ide.eclipse.adt.ResourceManagerBuilder</buildcommand>
+						<buildcommand>com.android.ide.eclipse.adt.PreCompilerBuilder</buildcommand>
+						<buildcommand>org.eclipse.jdt.core.javabuilder</buildcommand>
+						<buildcommand>com.android.ide.eclipse.adt.ApkBuilder</buildcommand>
+					</additionalBuildcommands>
+					<additionalProjectnatures>
+						<projectnature>com.android.ide.eclipse.adt.AndroidNature</projectnature>
+					</additionalProjectnatures>
+					<classpathContainers>
+						<classpathContainer>com.android.ide.eclipse.adt.ANDROID_FRAMEWORK</classpathContainer>
+						<classpathContainer>com.android.ide.eclipse.adt.LIBRARIES</classpathContainer>
+					</classpathContainers>
+					<outputDirectory>bin</outputDirectory>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>false</downloadJavadocs>
+				</configuration>
+			</plugin>
+
+			<!-- Android Maven Plugin -->
+			<plugin>
+				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+				<artifactId>android-maven-plugin</artifactId>
+				<version>3.5.0</version>
+				<configuration>
+					<sdk>
+						<path>${android.sdk.path}</path>
+						<platform>${android.sdk.platform}</platform>
+					</sdk>
+					<deleteConflictingFiles>true</deleteConflictingFiles>
+					<proguard>
+						<config>proguard.cfg</config>
+						<skip>${android.proguard.skip}</skip>
+					</proguard>
+					<sign>
+						<debug>${android.sign.debug}</debug>
+					</sign>
+					<zipalign>
+						<skip>${android.zipalign.skip}</skip>
+						<verbose>false</verbose>
+						<outputApk>${project.build.directory}/${project.artifactId}-v${project.version}-${environment.name}-${apk.suffix}.apk</outputApk>
+					</zipalign>
+					<renameManifestPackage>${manifest.package}</renameManifestPackage>
+				</configuration>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<id>update-manifest</id>
+						<goals>
+							<goal>manifest-update</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>alignApk</id>
+						<phase>install</phase>
+						<goals>
+							<goal>zipalign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<!-- Maven Jarsigner Plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jarsigner-plugin</artifactId>
+				<version>1.2</version>
+				<executions>
+					<execution>
+						<id>signing</id>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+						<phase>package</phase>
+						<inherited>true</inherited>
+						<configuration>
+							<skip>${android.sign.debug}</skip>
+							<archiveDirectory></archiveDirectory>
+							<includes>
+								<include>${project.build.directory}/*.apk</include>
+							</includes>
+							<keystore>${app.keystore}</keystore>
+							<storepass>${app.store.password}</storepass>
+							<keypass>${app.key.password}</keypass>
+							<alias>${app.alias}</alias>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Git commit id Plugin -->
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<version>2.0.2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<prefix>git</prefix>
+					<dateFormat>dd.MM.yyyy HH:mm:ss z</dateFormat>
+					<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+					<skipPomProjects>true</skipPomProjects>
+					<generateGitPropertiesFile>${git.properties.enabled}</generateGitPropertiesFile>
+					<generateGitPropertiesFilename>src/main/resources/git.properties</generateGitPropertiesFilename>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+
+		<!-- Free App Profile -->
+		<profile>
+			<id>code-number-free</id>
+			<properties>
+				<android.manifest.applicationLabel>@string/appNameFree</android.manifest.applicationLabel>
+				<manifest.package>com.jdroid.slotmachine.lite</manifest.package>
+				<apk.suffix>free</apk.suffix>
+				<free.app>true</free.app>
+				<ads.enabled>true</ads.enabled>
+			</properties>
+		</profile>
+
+		<!-- Paid App Profile -->
+		<profile>
+			<id>code-number-paid</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<android.manifest.applicationLabel>@string/appName</android.manifest.applicationLabel>
+				<manifest.package>com.jdroid.slotmachine</manifest.package>
+				<apk.suffix>paid</apk.suffix>
+				<free.app>false</free.app>
+				<ads.enabled>false</ads.enabled>
+			</properties>
+		</profile>
+
+		<!-- Development Profile -->
+		<profile>
+			<id>slot-machine-dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<environment.name>DEV</environment.name>
+				<debug.settings>true</debug.settings>
+				<analytics.enabled>false</analytics.enabled>
+				<mail.contact>jdroidsoft@gmail.com</mail.contact>
+				<mail.reporting>false</mail.reporting>
+				<android.manifest.debuggable>true</android.manifest.debuggable>
+				<android.sign.debug>true</android.sign.debug>
+				<android.zipalign.skip>true</android.zipalign.skip>
+				<android.proguard.skip>false</android.proguard.skip>
+				<git.properties.enabled>true</git.properties.enabled>
+			</properties>
+			<build>
+				<resources>
+					<resource>
+						<directory>src/main/resources</directory>
+						<filtering>true</filtering>
+						<excludes>
+							<exclude>settings.local.properties</exclude>
+						</excludes>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+		<!-- QA Profile -->
+		<profile>
+			<id>slot-machine-qa</id>
+			<properties>
+				<environment.name>QA</environment.name>
+				<debug.settings>true</debug.settings>
+				<analytics.enabled>false</analytics.enabled>
+				<mail.contact>jdroidsoft@gmail.com</mail.contact>
+				<mail.reporting>false</mail.reporting>
+				<android.manifest.debuggable>true</android.manifest.debuggable>
+				<android.sign.debug>true</android.sign.debug>
+				<android.zipalign.skip>true</android.zipalign.skip>
+				<android.proguard.skip>false</android.proguard.skip>
+				<git.properties.enabled>true</git.properties.enabled>
+			</properties>
+			<build>
+				<resources>
+					<resource>
+						<directory>src/main/resources</directory>
+						<filtering>true</filtering>
+						<excludes>
+							<exclude>settings.local.properties</exclude>
+						</excludes>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+		<!-- UAT Profile -->
+		<profile>
+			<id>slot-machine-uat</id>
+			<properties>
+				<environment.name>UAT</environment.name>
+				<debug.settings>false</debug.settings>
+				<analytics.enabled>false</analytics.enabled>
+				<mail.contact>jdroidsoft@gmail.com</mail.contact>
+				<mail.reporting>false</mail.reporting>
+				<android.manifest.debuggable>true</android.manifest.debuggable>
+				<android.sign.debug>true</android.sign.debug>
+				<android.zipalign.skip>true</android.zipalign.skip>
+				<android.proguard.skip>false</android.proguard.skip>
+				<git.properties.enabled>true</git.properties.enabled>
+			</properties>
+			<build>
+				<resources>
+					<resource>
+						<directory>src/main/resources</directory>
+						<filtering>true</filtering>
+						<excludes>
+							<exclude>settings.local.properties</exclude>
+							<exclude>git.properties</exclude>
+							<exclude>mocks/**</exclude>
+						</excludes>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+		<!-- Production Profile -->
+		<profile>
+			<id>slot-machine-prod</id>
+			<properties>
+				<environment.name>PROD</environment.name>
+				<debug.settings>false</debug.settings>
+				<analytics.enabled>true</analytics.enabled>
+				<mail.contact>jdroidsoft@gmail.com</mail.contact>
+				<mail.reporting>false</mail.reporting>
+				<android.manifest.debuggable>false</android.manifest.debuggable>
+				<android.sign.debug>false</android.sign.debug>
+				<android.zipalign.skip>false</android.zipalign.skip>
+				<android.proguard.skip>false</android.proguard.skip>
+				<git.properties.enabled>false</git.properties.enabled>
+			</properties>
+			<build>
+				<finalName>${project.artifactId}-v${project.version}-${environment.name}-notaligned</finalName>
+				<resources>
+					<resource>
+						<directory>src/main/resources</directory>
+						<filtering>true</filtering>
+						<excludes>
+							<exclude>settings.local.properties</exclude>
+							<exclude>git.properties</exclude>
+							<exclude>mocks/**</exclude>
+						</excludes>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+	</profiles>
+</project>
