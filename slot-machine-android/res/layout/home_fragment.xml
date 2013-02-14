@@ -17,16 +17,17 @@
 	</LinearLayout>
 
 	<TextView android:id="@+id/gameResult" android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:layout_marginTop="10dp" android:layout_gravity="center_horizontal" android:textSize="18sp" android:visibility="invisible" />
+		android:layout_marginTop="10dp" android:layout_gravity="center_horizontal" android:textSize="22sp" style="@style/blackShadowText"
+		android:visibility="invisible" />
 
 	<LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
 		android:orientation="horizontal" android:layout_gravity="center_horizontal" android:layout_marginTop="10dp">
 
 		<TextView android:id="@+id/credits" android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:textSize="18sp" android:layout_marginRight="10dp" android:text="@string/credits" />
+			android:textSize="22sp" android:layout_marginRight="20dp" android:text="@string/credits" style="@style/blackShadowText" />
 
 		<Button android:id="@+id/play" android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:paddingRight="50dp" android:paddingLeft="50dp" android:textSize="18sp" android:text="@string/play" style="@style/button" />
+			android:paddingRight="50dp" android:paddingLeft="50dp" android:textSize="24sp" android:text="@string/play" style="@style/button" />
 	</LinearLayout>
 
 </LinearLayout>

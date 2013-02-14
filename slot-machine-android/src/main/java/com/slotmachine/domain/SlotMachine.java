@@ -49,7 +49,7 @@ public class SlotMachine {
 	}
 	
 	private int getUpIndex(int index) {
-		return Math.abs(index - 1) % SLOTS_PER_WHEEL;
+		return index == 0 ? SLOTS_PER_WHEEL - 1 : (index - 1) % SLOTS_PER_WHEEL;
 	}
 	
 	private int getDownIndex(int index) {
@@ -89,17 +89,17 @@ public class SlotMachine {
 		// }
 		
 		if (slot1.equals(slot2) && slot2.equals(slot3) && slot3.equals(slot4) && slot4.equals(slot5)) {
-			credits = credits + 75;
+			credits = credits + 200;
 		} else if (slot1.equals(slot2) && slot2.equals(slot3) && slot3.equals(slot4)) {
-			credits = credits + 15;
+			credits = credits + 50;
 		} else if (slot2.equals(slot3) && slot3.equals(slot4) && slot4.equals(slot5)) {
-			credits = credits + 15;
+			credits = credits + 50;
 		} else if (slot1.equals(slot2) && slot2.equals(slot3)) {
-			credits = credits + 5;
+			credits = credits + 10;
 		} else if (slot2.equals(slot3) && slot3.equals(slot4)) {
-			credits = credits + 5;
+			credits = credits + 10;
 		} else if (slot3.equals(slot4) && slot4.equals(slot5)) {
-			credits = credits + 5;
+			credits = credits + 10;
 		}
 		return credits;
 	}

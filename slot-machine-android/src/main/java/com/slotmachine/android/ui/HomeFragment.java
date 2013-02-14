@@ -130,7 +130,7 @@ public class HomeFragment extends AbstractFragment {
 					gameResult.setVisibility(View.VISIBLE);
 					totalCredits += newCredits;
 				} else {
-					totalCredits -= 1;
+					totalCredits -= 5;
 				}
 				credits.setText(getString(R.string.credits, totalCredits));
 				play.setEnabled(true);
