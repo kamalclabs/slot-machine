@@ -1,29 +1,22 @@
 package com.slotmachine.android.ui;
 
-import java.lang.ref.SoftReference;
-import java.util.ArrayList;
 import java.util.List;
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import com.jdroid.android.fragment.AbstractFragment;
-import com.jdroid.android.utils.BitmapUtils;
 import com.jdroid.android.utils.SharedPreferencesUtils;
 import com.jdroid.java.collections.Lists;
 import com.jdroid.java.utils.IdGenerator;
 import com.jdroid.slotmachine.lite.R;
 import com.slotmachine.android.wheel.OnWheelScrollListener;
 import com.slotmachine.android.wheel.WheelView;
-import com.slotmachine.android.wheel.adapters.AbstractWheelAdapter;
-import com.slotmachine.domain.Pack;
 import com.slotmachine.domain.Slot;
+import com.slotmachine.domain.SlotMachine;
 
 /**
  * 
@@ -40,7 +33,7 @@ public class HomeFragment extends AbstractFragment {
 	private WheelView wheel4;
 	private WheelView wheel5;
 	
-	private Pack pack;
+	private SlotMachine slotMachine;
 	private Long totalCredits;
 	
 	/**
@@ -62,7 +55,7 @@ public class HomeFragment extends AbstractFragment {
 			slots.add(new Slot(R.drawable.simpsons4));
 			slots.add(new Slot(R.drawable.simpsons5));
 			slots.add(new Slot(R.drawable.simpsons6));
-			pack = new Pack(slots);
+			slotMachine = new SlotMachine(slots);
 		} else if (packId == 2) {
 			slots.add(new Slot(R.drawable.simpsons7));
 			slots.add(new Slot(R.drawable.simpsons8));
@@ -70,7 +63,7 @@ public class HomeFragment extends AbstractFragment {
 			slots.add(new Slot(R.drawable.simpsons10));
 			slots.add(new Slot(R.drawable.simpsons11));
 			slots.add(new Slot(R.drawable.simpsons12));
-			pack = new Pack(slots);
+			slotMachine = new SlotMachine(slots);
 		} else {
 			slots.add(new Slot(R.drawable.simpsons13));
 			slots.add(new Slot(R.drawable.simpsons14));
@@ -79,7 +72,7 @@ public class HomeFragment extends AbstractFragment {
 			slots.add(new Slot(R.drawable.simpsons17));
 			slots.add(new Slot(R.drawable.simpsons18));
 		}
-		pack = new Pack(slots);
+		slotMachine = new SlotMachine(slots);
 	};
 	
 	/**
@@ -130,7 +123,7 @@ public class HomeFragment extends AbstractFragment {
 			
 			@Override
 			public void onScrollingFinished(WheelView wheel) {
-				int newCredits = pack.getNewCredits(wheel1.getCurrentItem(), wheel2.getCurrentItem(),
+				int newCredits = slotMachine.getNewCredits(wheel1.getCurrentItem(), wheel2.getCurrentItem(),
 					wheel3.getCurrentItem(), wheel4.getCurrentItem(), wheel5.getCurrentItem());
 				if (newCredits > 0) {
 					gameResult.setText(getString(R.string.creditsWon, newCredits));
@@ -161,7 +154,7 @@ public class HomeFragment extends AbstractFragment {
 	 */
 	private WheelView initWheel(int id, int wheelNumber, OnWheelScrollListener scrolledListener) {
 		WheelView wheel = findView(id);
-		wheel.setViewAdapter(new SlotMachineAdapter(getActivity(), pack.getSlots(wheelNumber)));
+		wheel.setViewAdapter(new SlotAdapter(getActivity(), slotMachine.getSlots(wheelNumber)));
 		wheel.setCurrentItem((int)(Math.random() * 10));
 		if (scrolledListener != null) {
 			wheel.addScrollingListener(scrolledListener);
@@ -178,64 +171,5 @@ public class HomeFragment extends AbstractFragment {
 	 */
 	private void mixWheel(WheelView wheelView, int scrollingDuration) {
 		wheelView.scroll(-350 + (int)(Math.random() * 50), scrollingDuration);
-	}
-	
-	/**
-	 * Slot machine adapter
-	 */
-	private class SlotMachineAdapter extends AbstractWheelAdapter {
-		
-		private static final int IMAGE_WIDTH = 80;
-		private static final int IMAGE_HEIGHT = 80;
-		
-		private List<Slot> slots;
-		private LayoutInflater inflater;
-		
-		// Cached images
-		private List<SoftReference<Bitmap>> images;
-		
-		public SlotMachineAdapter(Context context, List<Slot> slots) {
-			this.slots = slots;
-			images = new ArrayList<SoftReference<Bitmap>>(slots.size());
-			for (Slot slot : slots) {
-				images.add(new SoftReference<Bitmap>(loadImage(slot)));
-			}
-			inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		}
-		
-		/**
-		 * Loads image from resources
-		 */
-		private Bitmap loadImage(Slot slot) {
-			return BitmapUtils.toBitmap(slot.getImageResId(), IMAGE_WIDTH, IMAGE_HEIGHT);
-		}
-		
-		@Override
-		public int getItemsCount() {
-			return slots.size();
-		}
-		
-		/**
-		 * @see com.slotmachine.android.wheel.adapters.WheelViewAdapter#getItem(int, android.view.View,
-		 *      android.view.ViewGroup)
-		 */
-		@Override
-		public View getItem(int index, View cachedView, ViewGroup parent) {
-			ImageView imageView;
-			if (cachedView != null) {
-				imageView = (ImageView)cachedView;
-			} else {
-				imageView = (ImageView)inflater.inflate(R.layout.slot_wheel_item, parent, false);
-			}
-			SoftReference<Bitmap> bitmapRef = images.get(index);
-			Bitmap bitmap = bitmapRef.get();
-			if (bitmap == null) {
-				bitmap = loadImage(slots.get(index));
-				images.set(index, new SoftReference<Bitmap>(bitmap));
-			}
-			imageView.setImageBitmap(bitmap);
-			
-			return imageView;
-		}
 	}
 }

@@ -11,15 +11,15 @@ import com.jdroid.java.collections.Maps;
  * 
  * @author Maxi Rosson
  */
-public class Pack {
+public class SlotMachine {
 	
-	private static final String TAG = Pack.class.getSimpleName();
+	private static final String TAG = SlotMachine.class.getSimpleName();
 	private static final int WHEELS = 5;
 	private static final int SLOTS_PER_WHEEL = 6;
 	
 	private Map<Integer, List<Slot>> slotsMap = Maps.newHashMap();
 	
-	public Pack(List<Slot> slots) {
+	public SlotMachine(List<Slot> slots) {
 		for (int i = 1; i <= WHEELS; i++) {
 			List<Slot> list = Lists.newArrayList(slots);
 			Collections.shuffle(list);

@@ -18,7 +18,6 @@ import java.util.List;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.util.AttributeSet;
@@ -57,9 +56,6 @@ public class WheelView extends View {
 	
 	// Item height
 	private int itemHeight = 0;
-	
-	// Center Line
-	private Drawable centerDrawable;
 	
 	// Shadows drawables
 	private GradientDrawable topShadow;
@@ -444,10 +440,6 @@ public class WheelView extends View {
 	 * Initializes resources
 	 */
 	private void initResourcesIfNecessary() {
-		if (centerDrawable == null) {
-			centerDrawable = getContext().getResources().getDrawable(R.drawable.wheel_val);
-		}
-		
 		if (topShadow == null) {
 			topShadow = new GradientDrawable(Orientation.TOP_BOTTOM, SHADOWS_COLORS);
 		}
@@ -578,7 +570,6 @@ public class WheelView extends View {
 			updateView();
 			
 			drawItems(canvas);
-			drawCenterRect(canvas);
 		}
 		
 		drawShadows(canvas);
@@ -612,18 +603,6 @@ public class WheelView extends View {
 		itemsLayout.draw(canvas);
 		
 		canvas.restore();
-	}
-	
-	/**
-	 * Draws rect for current value
-	 * 
-	 * @param canvas the canvas for drawing
-	 */
-	private void drawCenterRect(Canvas canvas) {
-		int center = getHeight() / 2;
-		int offset = (int)((getItemHeight() / 2) * 1.2);
-		centerDrawable.setBounds(0, center - offset, getWidth(), center + offset);
-		centerDrawable.draw(canvas);
 	}
 	
 	@Override
