@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,7 +32,7 @@ import com.slotmachine.domain.Slot;
 public class HomeFragment extends AbstractFragment {
 	
 	private final static String CREDITS_KEY = "credits";
-	private final static Long INITIAL_CREDITS = 50L;
+	private final static Long INITIAL_CREDITS = 1000L;
 	
 	private WheelView wheel1;
 	private WheelView wheel2;
@@ -102,11 +101,14 @@ public class HomeFragment extends AbstractFragment {
 		final TextView credits = findView(R.id.credits);
 		credits.setText(getString(R.string.credits, totalCredits));
 		
+		final TextView gameResult = findView(R.id.gameResult);
+		
 		final Button play = findView(R.id.play);
 		play.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
+				gameResult.setVisibility(View.INVISIBLE);
 				play.setEnabled(false);
 				mixWheel(wheel1, 1000);
 				mixWheel(wheel2, 1500);
@@ -116,12 +118,11 @@ public class HomeFragment extends AbstractFragment {
 			}
 		});
 		
-		final TextView gameResult = findView(R.id.gameResult);
-		wheel1 = initWheel(R.id.slot1, null);
-		wheel2 = initWheel(R.id.slot2, null);
-		wheel3 = initWheel(R.id.slot3, null);
-		wheel4 = initWheel(R.id.slot4, null);
-		wheel5 = initWheel(R.id.slot5, new OnWheelScrollListener() {
+		wheel1 = initWheel(R.id.slot1, 1, null);
+		wheel2 = initWheel(R.id.slot2, 2, null);
+		wheel3 = initWheel(R.id.slot3, 3, null);
+		wheel4 = initWheel(R.id.slot4, 4, null);
+		wheel5 = initWheel(R.id.slot5, 5, new OnWheelScrollListener() {
 			
 			@Override
 			public void onScrollingStarted(WheelView wheel) {
@@ -129,14 +130,14 @@ public class HomeFragment extends AbstractFragment {
 			
 			@Override
 			public void onScrollingFinished(WheelView wheel) {
-				int newCredits = getNewCredits();
+				int newCredits = pack.getNewCredits(wheel1.getCurrentItem(), wheel2.getCurrentItem(),
+					wheel3.getCurrentItem(), wheel4.getCurrentItem(), wheel5.getCurrentItem());
 				if (newCredits > 0) {
 					gameResult.setText(getString(R.string.creditsWon, newCredits));
 					gameResult.setVisibility(View.VISIBLE);
 					totalCredits += newCredits;
 				} else {
 					totalCredits -= 1;
-					gameResult.setVisibility(View.INVISIBLE);
 				}
 				credits.setText(getString(R.string.credits, totalCredits));
 				play.setEnabled(true);
@@ -158,9 +159,9 @@ public class HomeFragment extends AbstractFragment {
 	 * 
 	 * @param id the wheel widget Id
 	 */
-	private WheelView initWheel(int id, OnWheelScrollListener scrolledListener) {
+	private WheelView initWheel(int id, int wheelNumber, OnWheelScrollListener scrolledListener) {
 		WheelView wheel = findView(id);
-		wheel.setViewAdapter(new SlotMachineAdapter(getActivity(), pack));
+		wheel.setViewAdapter(new SlotMachineAdapter(getActivity(), pack.getSlots(wheelNumber)));
 		wheel.setCurrentItem((int)(Math.random() * 10));
 		if (scrolledListener != null) {
 			wheel.addScrollingListener(scrolledListener);
@@ -168,31 +169,6 @@ public class HomeFragment extends AbstractFragment {
 		wheel.setCyclic(true);
 		wheel.setEnabled(false);
 		return wheel;
-	}
-	
-	private int getNewCredits() {
-		int credits = 0;
-		
-		int value1 = wheel1.getCurrentItem();
-		int value2 = wheel2.getCurrentItem();
-		int value3 = wheel3.getCurrentItem();
-		int value4 = wheel4.getCurrentItem();
-		int value5 = wheel5.getCurrentItem();
-		
-		if ((value1 == value2) && (value2 == value3) && (value3 == value4) && (value4 == value5)) {
-			credits = credits + 75;
-		} else if ((value1 == value2) && (value2 == value3) && (value3 == value4)) {
-			credits = credits + 15;
-		} else if ((value2 == value3) && (value3 == value4) && (value4 == value5)) {
-			credits = credits + 15;
-		} else if ((value1 == value2) && (value2 == value3)) {
-			credits = credits + 5;
-		} else if ((value2 == value3) && (value3 == value4)) {
-			credits = credits + 5;
-		} else if ((value3 == value4) && (value4 == value5)) {
-			credits = credits + 5;
-		}
-		return credits;
 	}
 	
 	/**
@@ -209,25 +185,22 @@ public class HomeFragment extends AbstractFragment {
 	 */
 	private class SlotMachineAdapter extends AbstractWheelAdapter {
 		
-		// Image size
 		private static final int IMAGE_WIDTH = 80;
 		private static final int IMAGE_HEIGHT = 80;
 		
-		private Pack pack;
+		private List<Slot> slots;
+		private LayoutInflater inflater;
 		
 		// Cached images
 		private List<SoftReference<Bitmap>> images;
-		private Context context;
-		// Layout params for image view
-		private LayoutParams params = new LayoutParams(IMAGE_WIDTH, IMAGE_HEIGHT);
 		
-		public SlotMachineAdapter(Context context, Pack pack) {
-			this.context = context;
-			this.pack = pack;
-			images = new ArrayList<SoftReference<Bitmap>>(pack.getSlots().size());
-			for (Slot slot : pack.getSlots()) {
+		public SlotMachineAdapter(Context context, List<Slot> slots) {
+			this.slots = slots;
+			images = new ArrayList<SoftReference<Bitmap>>(slots.size());
+			for (Slot slot : slots) {
 				images.add(new SoftReference<Bitmap>(loadImage(slot)));
 			}
+			inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		}
 		
 		/**
@@ -239,7 +212,7 @@ public class HomeFragment extends AbstractFragment {
 		
 		@Override
 		public int getItemsCount() {
-			return pack.getSlots().size();
+			return slots.size();
 		}
 		
 		/**
@@ -252,13 +225,12 @@ public class HomeFragment extends AbstractFragment {
 			if (cachedView != null) {
 				imageView = (ImageView)cachedView;
 			} else {
-				imageView = new ImageView(context);
-				imageView.setLayoutParams(params);
+				imageView = (ImageView)inflater.inflate(R.layout.slot_wheel_item, parent, false);
 			}
 			SoftReference<Bitmap> bitmapRef = images.get(index);
 			Bitmap bitmap = bitmapRef.get();
 			if (bitmap == null) {
-				bitmap = loadImage(pack.getSlots().get(index));
+				bitmap = loadImage(slots.get(index));
 				images.set(index, new SoftReference<Bitmap>(bitmap));
 			}
 			imageView.setImageBitmap(bitmap);
