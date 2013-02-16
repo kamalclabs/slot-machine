@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="appName">Slot Machine</string>
-	<string name="appNameFree">Slot Machine Lite</string>
+	<string name="appName">Simpsons Slot Machine</string>
+	<string name="appNameFree">Simpsons Slot Machine Lite</string>
 
 	<string name="play">Spin</string>
 	<string name="credits">%1$s credits</string>
 	<string name="creditsWon">%1$s credits won !!!</string>
 
 	<!-- About -->
-	<string name="shareSubject">Code Number</string>
-	<string name="shareContent">Train your mind guessing the secret number.
+	<string name="shareSubject">Simpsons Slot Machine</string>
+	<string name="shareContent">
+		Enjoy the Simpsons Slot Machine anywhere!
 		Download it from Google Play.
 		https://play.google.com/store/apps/details?id=%1$s</string>
 

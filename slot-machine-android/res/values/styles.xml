@@ -19,8 +19,4 @@
 		<item name="android:textStyle">bold</item>
 	</style>
 
-	<style name="textView">
-		<item name="android:textSize">@dimen/defaultTextSize</item>
-	</style>
-
 </resources>

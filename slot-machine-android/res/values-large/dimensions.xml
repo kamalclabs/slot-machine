@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-	<dimen name="defaultTextSize">18sp</dimen>
-
+	<dimen name="spinTextSize">24sp</dimen>
+	<dimen name="slotHeight">260dp</dimen>
+	<dimen name="wheelHeight">80dp</dimen>
 </resources>

@@ -131,7 +131,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<!-- Maven Jarsigner Plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -188,7 +188,7 @@
 
 		<!-- Free App Profile -->
 		<profile>
-			<id>code-number-free</id>
+			<id>slot-machine-free</id>
 			<properties>
 				<android.manifest.applicationLabel>@string/appNameFree</android.manifest.applicationLabel>
 				<manifest.package>com.jdroid.slotmachine.lite</manifest.package>
@@ -200,7 +200,7 @@
 
 		<!-- Paid App Profile -->
 		<profile>
-			<id>code-number-paid</id>
+			<id>slot-machine-paid</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
