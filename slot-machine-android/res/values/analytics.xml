@@ -3,7 +3,7 @@
 
 	<!-- <bool name="ga_debug">true</bool> -->
 
-	<string name="ga_trackingId">UA-34246004-1</string>
+	<string name="ga_trackingId">UA-34246004-3</string>
 
 	<!--Enable Activity tracking -->
 	<bool name="ga_autoActivityTracking">true</bool>
