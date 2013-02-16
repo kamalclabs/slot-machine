@@ -36,6 +36,8 @@ public class HomeFragment extends AbstractFragment {
 	private SlotMachine slotMachine;
 	private Long totalCredits;
 	
+	private OnWheelScrollListener listener;
+	
 	/**
 	 * @see com.jdroid.android.fragment.AbstractFragment#onCreate(android.os.Bundle)
 	 */
@@ -115,7 +117,7 @@ public class HomeFragment extends AbstractFragment {
 		wheel2 = initWheel(R.id.slot2, 2, null);
 		wheel3 = initWheel(R.id.slot3, 3, null);
 		wheel4 = initWheel(R.id.slot4, 4, null);
-		wheel5 = initWheel(R.id.slot5, 5, new OnWheelScrollListener() {
+		wheel5 = initWheel(R.id.slot5, 5, listener = new OnWheelScrollListener() {
 			
 			@Override
 			public void onScrollingStarted(WheelView wheel) {
@@ -145,6 +147,15 @@ public class HomeFragment extends AbstractFragment {
 	public void onStop() {
 		super.onStop();
 		SharedPreferencesUtils.savePreference(CREDITS_KEY, totalCredits);
+	}
+	
+	/**
+	 * @see com.jdroid.android.fragment.AbstractFragment#onDestroy()
+	 */
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		wheel5.removeScrollingListener(listener);
 	}
 	
 	/**
