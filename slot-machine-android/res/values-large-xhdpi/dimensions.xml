@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<dimen name="buttonCornerRadius">10dip</dimen>
-	<dimen name="spinTextSize">18sp</dimen>
 	<dimen name="slotHeight">160dp</dimen>
 	<dimen name="wheelHeight">50dp</dimen>
 </resources>
